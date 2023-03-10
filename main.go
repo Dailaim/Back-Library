@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/Daizaikun/back-library/app"
 	"github.com/Daizaikun/back-library/database"
 	"github.com/Daizaikun/back-library/helpers"
@@ -10,10 +11,13 @@ import (
 
 func main() {
 
+	//inicia variables de entorno si existen
+
+	_ = godotenv.Load()
+	
 	//Inicia la conexión a la base de datos
 
-	db := database.Connect()
-	database.Migrate(db)
+	database.Connect()
 
 	//Asegura que las carpetas existan
 

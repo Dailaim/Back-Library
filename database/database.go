@@ -1,23 +1,53 @@
 package database
 
 import (
+	"fmt"
+	"os"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
-func Connect() *gorm.DB {
+var DB *gorm.DB
 
-	dsn := "host=localhost user=library password=controlbox dbname=library port=5432 sslmode=disable TimeZone=America/Bogota"
+func Connect() {
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	host := env("host_db")
+
+	user := env("user_db")
+
+	password := env("password_db")
+
+	name := env("name_db")
+
+	port := env("port_db")
+
+	dsn := fmt.Sprintf(`host=%s user=%s password=%s dbname=%s port=%s
+	sslmode=disable TimeZone=America/Bogota`, host, user, password, name, port)
+
+	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
 
-	return db
+  DB.Logger = logger.Default.LogMode(logger.Info)
+
+  Migrate(DB)
+
+  fmt.Println("Connected Successfully to the Database")
+
 }
 
-/* 
+func env(env string) string {
+	variable := os.Getenv(env)
+	if len(variable) == 0 {
+		panic(fmt.Sprintf(`failed variable de entorno %s`, env))
+	}
+	return variable
+}
+
+/*
 	db.AutoMigrate(&Product{})
 
 	// Create
@@ -35,5 +65,5 @@ func Connect() *gorm.DB {
 	db.Model(&product).Updates(map[string]interface{}{"Price": 200, "Code": "F42"})
 
 	// Delete - delete product
-	db.Delete(&product, 1) 
+	db.Delete(&product, 1)
 */
