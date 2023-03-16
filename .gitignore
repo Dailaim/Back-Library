@@ -2,3 +2,5 @@ tmp
 *.exe
 .vscode
 .env
+
+uploads

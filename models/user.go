@@ -1,13 +1,10 @@
 package models
 
-import (
-	"gorm.io/gorm"
-)
-
 type User struct {
-	gorm.Model
-	Email    string `json:"email" gorm:"not null;unique_index"`
-	Name     string `json:"name" gorm:"not null"`
-	Password string `json:"password" gorm:"not null"`
-	Photo    string `json:"photo"  gorm:"not null"`
+	BasicModel
+	Email    string    `json:"email,omitempty" gorm:"not null;unique_index" validate:"required"`
+	Name     string    `json:"name,omitempty" gorm:"not null" validate:"required,email,min=6"`
+	Password string    `json:"password,omitempty" gorm:"not null" validate:"required"`
+	Photo    string    `json:"photo,omitempty"  gorm:"not null" validate:"required"`
+	Reviews  []*Review `json:"reviews,omitempty"  gorm:"foreignKey:UserID"`
 }

@@ -1,11 +1,11 @@
 package models
 
 type BookAuthor struct {
-	BookID  uint
-	AutorID uint
+    BookID   uint `gorm:"foreignKey:BookID"`
+    AuthorID uint `gorm:"foreignKey:AuthorID"`
 }
 
 type BookCategory struct {
-	BookID     uint
-	CategoryID uint
+    BookID     uint `gorm:"foreignKey:BookID"`
+    CategoryID uint `gorm:"foreignKey:CategoryID"`
 }

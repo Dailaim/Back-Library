@@ -6,22 +6,26 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func (c *Controller) Delete(ctx *fiber.Ctx) error {
+func (c *Controller) GetById(ctx *fiber.Ctx) error{
 
 	id := ctx.Params("id")
 
-	review := new(models.Review)
+	review := new(models.Review) 
 
 	err := GetReviewById(review, id)
-	
+
 	if err != nil {
 		return err
 	}
-
-	if result := database.DB.Delete(review); result.Error != nil {
-		return result.Error
-	}
-
-	return ctx.SendStatus(fiber.StatusNoContent)
 	
+	return ctx.JSON(review)
 }
+
+func GetReviewById (review *models.Review, id string) error{
+	
+	result := database.DB.First(review, id)
+
+	return result.Error
+}
+
+

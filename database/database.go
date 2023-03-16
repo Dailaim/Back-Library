@@ -6,12 +6,13 @@ import (
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
-)
+	/* 	"gorm.io/gorm/logger" */)
 
 var DB *gorm.DB
 
-func Connect() {
+
+
+func Connect() (*gorm.DB) {
 
 	host := env("host_db")
 
@@ -31,11 +32,18 @@ func Connect() {
 		panic("failed to connect database")
 	}
 
-  DB.Logger = logger.Default.LogMode(logger.Info)
+/*   DB.Logger = logger.Default.LogMode(logger.Info) */
 
   Migrate(DB)
 
+  if err != nil {
+		panic("failed to connect database")
+	}
+
+
   fmt.Println("Connected Successfully to the Database")
+
+  return DB
 
 }
 

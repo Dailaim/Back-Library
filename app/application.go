@@ -29,18 +29,17 @@ func App() *fiber.App {
 		Format: "[${ip}]:${port} ${status} - ${method} ${path}\n",
 	}))
 
-	// Crear root's de la aplicación 
-
-	app.Route("/user", router.User)
-
-	app.Route("/review", router.Review)
+	// Crear rout's de la aplicación 
 	
-	app.Route("/book", router.Book)
+	router.CRUD(app.Group("/crud"))
+
+	
+	router.Auth(app.Group("/auth"))
 
 	//sirve las images de la aplicación
 
-	app.Static("/images/photos", "../uploads/photos")
-	app.Static("/images/photos", "../uploads/ImagesBooks")
+
+	router.Image(app.Group("/images/"))
 
 	return app
 }

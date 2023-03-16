@@ -6,29 +6,23 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func (c *Controller) Update(ctx *fiber.Ctx) error {
+func (c *Controller) GetById(ctx *fiber.Ctx) error{
 	id := ctx.Params("id")
 
-	book := new(models.Book)
+	book := new(models.Book) 
 
 	err := GetBookById(book, id)
 
 	if err != nil {
 		return err
 	}
-
-	if err := ctx.BodyParser(book); err != nil {
-		return err
-	}
 	
-	if err := UpdateBook(book); err != nil {
-		return err
-	}
 	return ctx.JSON(book)
 }
 
+func GetBookById (book *models.Book, id string) error{
+	
+	result := database.DB.Preload("Authors").Preload("Categories").Preload("Reviews").First(book, id)
 
-func UpdateBook(book *models.Book) error {
-	result := database.DB.Save(book)
 	return result.Error
 }
