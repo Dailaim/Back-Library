@@ -14,15 +14,15 @@ var DB *gorm.DB
 
 func Connect() (*gorm.DB) {
 
-	host := env("host_db")
+	host := env("host_db", "localhost")
 
-	user := env("user_db")
+	user := env("user_db", "library")
 
-	password := env("password_db")
+	password := env("password_db","controlbox")
 
-	name := env("name_db")
+	name := env("name_db","library")
 
-	port := env("port_db")
+	port := env("port_db", "5432")
 
 	dsn := fmt.Sprintf(`host=%s user=%s password=%s dbname=%s port=%s
 	sslmode=disable TimeZone=America/Bogota`, host, user, password, name, port)
@@ -47,10 +47,10 @@ func Connect() (*gorm.DB) {
 
 }
 
-func env(env string) string {
+func env(env string, def string) string {
 	variable := os.Getenv(env)
 	if len(variable) == 0 {
-		panic(fmt.Sprintf(`failed variable de entorno %s`, env))
+		return def
 	}
 	return variable
 }

@@ -10,7 +10,7 @@ func (c *Controller) GetAll(ctx *fiber.Ctx) error {
 
 	reviews := new([]models.Review)
 
-	result := database.DB.Find(reviews)
+	result := database.DB.Preload("Books").Preload("Users").Find(reviews)
 	if result.Error != nil {
 		return result.Error
 	}

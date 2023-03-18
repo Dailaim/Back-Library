@@ -9,7 +9,7 @@ import (
 func (c *Controller) GetAll(ctx *fiber.Ctx) error {
 	book := new([]models.Book)
 
-	result := database.DB.Preload("Authors").Preload("Categories").Preload("Reviews").Find(book)
+	result := database.DB.Preload("Authors").Preload("Categories").Find(book)
 	if result.Error != nil {
 		return result.Error
 	}
