@@ -1,6 +1,9 @@
-tmp
-*.exe
-.vscode
+**\tmp
+**\*.exe
+**\.vscode
+**\.env
 .env
+*.exe
 
-uploads
+**\uploads
+fly.toml

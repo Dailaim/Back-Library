@@ -1,6 +1,8 @@
-tmp
-*.exe
-.vscode
-.env
+# flyctl launch added from .gitignore
+**\tmp
+**\*.exe
+**\.vscode
+**\.env
 
-uploads
+**\uploads
+fly.toml
