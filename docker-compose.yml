@@ -13,6 +13,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment: 
+      host_db: db
     ports:
       - "8080:8080"
     depends_on:

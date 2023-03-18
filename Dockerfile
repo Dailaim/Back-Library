@@ -1,25 +1,12 @@
-FROM registry.fedoraproject.org/fedora-minimal:34
+FROM docker.io/golang:1.20
 
-RUN microdnf install -y go git golang-x-net-devel
+WORKDIR /usr/src/app
 
-RUN microdnf update golang
+# pre-copy/cache go.mod for pre-downloading dependencies and only redownloading them in subsequent builds if they change
+COPY go.mod go.sum ./
 
-WORKDIR /app
-
-COPY go.mod .
-COPY go.sum .
-
-RUN go mod tidy
-
-RUN go mod download golang.org/x/net@v0.8.0
-
-RUN go mod download
-
+RUN go mod download && go mod verify
 
 COPY . .
-
-RUN go build -o main .
-
-EXPOSE 8080
-
-CMD ["./main"]
+RUN go build -v -o .
+CMD ["./back-library"]
