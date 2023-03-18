@@ -33,7 +33,7 @@ func main() {
 
 	app := application.App()
 
-	app.Listen(port("3000"))
+	app.Listen(port("8080"))
 }
 
 func port(p string) string {
