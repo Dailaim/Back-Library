@@ -1,87 +1,62 @@
 package auth
 
 import (
-	"fmt"
-	"mime/multipart"
-	"time"
 
-	userCRUD "github.com/Daizaikun/back-library/controllers/user"
+	"github.com/Daizaikun/back-library/database"
 	"github.com/Daizaikun/back-library/models"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
-type RegisterInput struct {
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	Photo    *multipart.FileHeader `json:"photo"`
-}
+func HandleRegistration(c *fiber.Ctx) error {
+    var user models.User
+    if err := c.BodyParser(&user); err != nil {
+        return err
+    }
 
-func Register(c *fiber.Ctx) error {
-	var input RegisterInput
+    // Validar que el email y la contraseña no estén vacíos
+    if user.Email == "" || user.Password == "" {
+        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+            "error": "email and password are required",
+        })
+    }
 
-	if err := c.BodyParser(&input); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "Invalid request",
-		})
-	}
+    // Validar que el email no esté en uso
+    existingUser := models.User{}
+    result := database.DB.Where("email = ?", user.Email).First(&existingUser)
+    if result.RowsAffected > 0 {
+        return c.Status(fiber.StatusConflict).JSON(fiber.Map{
+            "error": "email already in use",
+        })
+    }
 
-	// Verificar si el email ya está registrado
-	user := new(models.User)
-	if err := userCRUD.GetUserByEmail(user, input.Email); err == nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "Email already exists",
-		})
-	}
+    // Hashear la contraseña del usuario
+    hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
+    if err != nil {
+        return err
+    }
+    user.Password = string(hashedPassword)
 
-	// Hash de la contraseña
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Failed to hash password",
-		})
-	}
+    // Guardar el usuario en la base de datos
+    result = database.DB.Create(&user)
+    if result.Error != nil {
+        return result.Error
+    }
 
-	// Guardar la imagen en la carpeta de fotos de usuario
-	photoID := uuid.New().String()
-	if err := c.SaveFile(input.Photo, fmt.Sprintf("./uploads/photos/%s", photoID)); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Failed to save photo",
-		})
-	}
+    // Generar el token de acceso
+    claims := jwt.MapClaims{}
+    claims["user_id"] = user.ID
+    token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+    signedToken, err := token.SignedString([]byte("secret_key"))
 
-	// Crear el nuevo usuario
-	newUser := &models.User{
-		Name:     input.Name,
-		Email:    input.Email,
-		Password: string(hashedPassword),
-		Photo:    photoID,
-	}
-	if err := userCRUD.CreateUser(newUser); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Failed to create user",
-		})
-	}
+    if err != nil {
+        return err
+    }
 
-	// Crear el token JWT
-	token := jwt.New(jwt.SigningMethodHS256)
-	claims := token.Claims.(jwt.MapClaims)
-	claims["email"] = newUser.Email
-	claims["exp"] = time.Now().Add(time.Hour * 24).Unix() // El token expira en 24 horas
+    // Establecer el token de acceso en la estructura User
+    user.AccessToken = signedToken
 
-	tokenString, err := token.SignedString([]byte("library"))
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Failed to create token",
-		})
-	}
-
-	// Devolver la respuesta JSON con el objeto creado y el token JWT
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"user":  newUser,
-		"token": tokenString,
-	})
+    // Devolver la estructura User al cliente
+    return c.JSON(user)
 }

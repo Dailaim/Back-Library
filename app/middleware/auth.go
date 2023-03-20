@@ -1,20 +1,27 @@
-package auth
+package middleware
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/Daizaikun/back-library/app/middleware"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 )
 
-func HandleLogout(c *fiber.Ctx) error {
+
+func AuthMiddleware(c *fiber.Ctx) error {
     // Obtener el token de acceso del encabezado Authorization
     authHeader := c.Get("Authorization")
+    if authHeader == "" {
+        return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+            "error": "no authorization token provided",
+        })
+    }
+
+    // Extraer el token de acceso del encabezado Authorization
     tokenString := strings.Replace(authHeader, "Bearer ", "", 1)
 
-    // Invalidar el token de acceso
+    // Validar el token de acceso
     claims := jwt.MapClaims{}
     token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
         if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -22,6 +29,17 @@ func HandleLogout(c *fiber.Ctx) error {
         }
         return []byte("secret_key"), nil
     })
+
+     // Verificar si el token de acceso está en la lista negra
+
+    if IsTokenBlacklisted(tokenString) {
+        return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+            "error": "invalid authorization token",
+        })
+    }
+
+
+
     if err != nil {
         return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
             "error": "invalid authorization token",
@@ -30,15 +48,15 @@ func HandleLogout(c *fiber.Ctx) error {
     if !token.Valid {
         return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
             "error": "invalid authorization token",
-        }) 
+        })
     }
 
-    // Agregar el token a la lista negra para invalidarlo
-    err = middleware.AddToken(tokenString)
-    if err != nil {
-        return err
-    }
+    // Obtener el ID de usuario del token de acceso
+    userID := claims["user_id"].(string)
 
-    // Devolver una respuesta vacía con un estado HTTP 204 No Content
-    return c.SendStatus(fiber.StatusNoContent)
+    // Establecer el ID de usuario en el contexto de Fiber
+    c.Set("user_id", userID)
+
+    // Llamar a la función siguiente en la cadena de middleware
+    return c.Next()
 }

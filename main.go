@@ -12,6 +12,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
+
 func main() {
 
 	//inicia variables de entorno si existen
@@ -31,7 +32,7 @@ func main() {
 
 	// Activa el funcionamiento de la app
 
-	app := application.App()
+	app := app.App()
 
 	app.Listen(port("8080"))
 }

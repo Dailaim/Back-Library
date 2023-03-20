@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//Verifica y crea las tablas de la base de datos
 func Migrate(db *gorm.DB) {
 
 	err := db.AutoMigrate(&models.Book{}, &models.Review{}, &models.User{},

@@ -1,9 +1,8 @@
 package auth
 
 import (
-	"time"
 
-	userCRUD "github.com/Daizaikun/back-library/controllers/user"
+	"github.com/Daizaikun/back-library/database"
 	"github.com/Daizaikun/back-library/models"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt"
@@ -11,47 +10,41 @@ import (
 )
 
 
-func Login(c *fiber.Ctx) error {
-    type LoginInput struct {
-        Email    string `json:"email"`
-        Password string `json:"password"`
+func HandleAuthentication(c *fiber.Ctx) error {
+    var user models.User
+    if err := c.BodyParser(&user); err != nil {
+        return err
     }
 
-    var input LoginInput
-    if err := c.BodyParser(&input); err != nil {
-        return fiber.NewError(fiber.StatusBadRequest, "Invalid request")
+    // Buscar el usuario en la base de datos
+    result := database.DB.Where("email = ?", user.Email).First(&user)
+    if result.RowsAffected == 0 {
+        return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+            "error": "incorrect email or password",
+        })
     }
 
-	user := new(models.User)
-
-    // Buscar al usuario en la base de datos
-    err := userCRUD.GetUserByEmail(user, input.Email)
+    // Validar la contraseña del usuario
+    err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(user.Password))
     if err != nil {
-        return fiber.NewError(fiber.StatusUnauthorized, "Invalid email or password")
+        return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+            "error": "incorrect email or password",
+        })
     }
 
-    // Verificar la contraseña
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password)); err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Invalid email or password",
-		})
-	}
-
-    // Crear el token JWT
-    claims := &Claims{
-        Email: user.Email,
-        StandardClaims: jwt.StandardClaims{
-            ExpiresAt: time.Now().Add(time.Hour * 24).Unix(), // El token expira en 24 horas
-        },
-    }
-
+    // Generar el token de acceso
+    claims := jwt.MapClaims{}
+    claims["user_id"] = user.ID
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-    tokenString, err := token.SignedString([]byte("library"))
+    signedToken, err := token.SignedString([]byte("secret_key"))
+
     if err != nil {
-        return fiber.NewError(fiber.StatusInternalServerError, "Failed to create token")
+        return err
     }
 
-    return c.JSON(fiber.Map{
-        "token": tokenString,
-    })
+    // Establecer el token de acceso en la estructura User
+    user.AccessToken = signedToken
+
+    // Devolver la estructura User al cliente
+    return c.JSON(user)
 }

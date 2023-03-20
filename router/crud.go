@@ -5,15 +5,11 @@ import (
 	"github.com/Daizaikun/back-library/controllers/author"
 	"github.com/Daizaikun/back-library/controllers/book"
 	"github.com/Daizaikun/back-library/controllers/category"
-	"github.com/Daizaikun/back-library/controllers/review"
-	"github.com/Daizaikun/back-library/controllers/user"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func CRUD(app fiber.Router) {
-
-	app.Route("/user", User)
 
 	app.Route("/review", Review)
 
@@ -22,6 +18,8 @@ func CRUD(app fiber.Router) {
 	app.Route("/author", Author)
 
 	app.Route("/category", Category)
+
+	app.Route("/user", User)
 
 }
 
@@ -34,25 +32,9 @@ func BasicCRUD(api fiber.Router, obj controller.Ctrl) {
 	api.Get("/:id", obj.GetById)
 }
 
-func User(api fiber.Router) {
-
-	BasicCRUD(api, &user.Controller{})
-
-	api.Post("/email", user.GetByEmail)
-
-}
-
 func Book(api fiber.Router) {
 
 	BasicCRUD(api, &book.Controller{})
-
-}
-
-func Review(api fiber.Router) {
-
-	BasicCRUD(api, &review.Controller{})
-
-	api.Post("/book/:id", review.GetAllByBook)
 
 }
 

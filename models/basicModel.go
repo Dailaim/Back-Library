@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// modelos básico de gorm
 type BasicModel struct {
 	ID        uint `gorm:"primarykey" json:"id,omitempty"`
 	CreatedAt time.Time `json:"create_at,omitempty"`

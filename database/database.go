@@ -2,76 +2,51 @@ package database
 
 import (
 	"fmt"
-	"os"
 
+	"github.com/Daizaikun/back-library/helpers"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	/* 	"gorm.io/gorm/logger" */)
 
 var DB *gorm.DB
 
+// Inicia la conexión a la base de datos
+func Connect() *gorm.DB {
 
+	//Comprueba todas las variables de entorno
 
-func Connect() (*gorm.DB) {
+	host := helpers.Env("host_db", "localhost")
 
-	host := env("host_db", "localhost")
+	user := helpers.Env("user_db", "library")
 
-	user := env("user_db", "library")
+	password := helpers.Env("password_db", "controlbox")
 
-	password := env("password_db","controlbox")
+	name := helpers.Env("name_db", "library")
 
-	name := env("name_db","library")
+	port := helpers.Env("port_db", "5432")
 
-	port := env("port_db", "5432")
+	// Ruta para la conexión de postgres 
 
 	dsn := fmt.Sprintf(`host=%s user=%s password=%s dbname=%s port=%s
 	sslmode=disable TimeZone=America/Bogota`, host, user, password, name, port)
+
+	// Conexión a la base de datos
 
 	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
 
-/*   DB.Logger = logger.Default.LogMode(logger.Info) */
+	/* DB.Logger = logger.Default.LogMode(logger.Info) */
 
-  Migrate(DB)
+	Migrate(DB)
 
-  if err != nil {
+	if err != nil {
 		panic("failed to connect database")
 	}
 
+	fmt.Println("Connected Successfully to the Database")
 
-  fmt.Println("Connected Successfully to the Database")
-
-  return DB
+	return DB
 
 }
-
-func env(env string, def string) string {
-	variable := os.Getenv(env)
-	if len(variable) == 0 {
-		return def
-	}
-	return variable
-}
-
-/*
-	db.AutoMigrate(&Product{})
-
-	// Create
-	db.Create(&Product{Code: "D42", Price: 100})
-
-	// Read
-	var product Product
-	db.First(&product, 1)                 // find product with integer primary key
-	db.First(&product, "code = ?", "D42") // find product with code D42
-
-	// Update - update product's price to 200
-	db.Model(&product).Update("Price", 200)
-	// Update - update multiple fields
-	db.Model(&product).Updates(Product{Price: 200, Code: "F42"}) // non-zero fields
-	db.Model(&product).Updates(map[string]interface{}{"Price": 200, "Code": "F42"})
-
-	// Delete - delete product
-	db.Delete(&product, 1)
-*/
