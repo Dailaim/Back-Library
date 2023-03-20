@@ -1,12 +1,13 @@
 package router
 
 import (
+	"github.com/gofiber/fiber/v2"
+
 	controller "github.com/Daizaikun/back-library/controllers"
 	"github.com/Daizaikun/back-library/controllers/author"
 	"github.com/Daizaikun/back-library/controllers/book"
 	"github.com/Daizaikun/back-library/controllers/category"
 
-	"github.com/gofiber/fiber/v2"
 )
 
 func CRUD(app fiber.Router) {
@@ -30,6 +31,7 @@ func BasicCRUD(api fiber.Router, obj controller.Ctrl) {
 	api.Put("/:id", obj.Update)
 	api.Delete("/:id", obj.Delete)
 	api.Get("/:id", obj.GetById)
+
 }
 
 func Book(api fiber.Router) {
