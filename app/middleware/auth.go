@@ -34,18 +34,7 @@ func AuthMiddleware(c *fiber.Ctx) error {
 
 	// Verificar si el token de acceso está en la lista negra
 
-	if IsTokenBlacklisted(tokenString) {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"error": "invalid authorization token",
-		})
-	}
-
-	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"error": "invalid authorization token",
-		})
-	}
-	if !token.Valid {
+	if IsTokenBlacklisted(tokenString) || err != nil || !token.Valid {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"error": "invalid authorization token",
 		})

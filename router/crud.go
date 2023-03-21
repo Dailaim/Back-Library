@@ -24,6 +24,8 @@ func CRUD(app fiber.Router) {
 
 }
 
+
+// Esto es un ejemplo de como se puede hacer un CRUD con un controlador
 func BasicCRUD(api fiber.Router, obj controller.Ctrl) {
 	// Asignar el controlador a la ruta especificada
 	api.Post("/", obj.Create)
@@ -45,6 +47,7 @@ func Category(api fiber.Router) {
 	BasicCRUD(api, &category.Controller{})
 
 }
+
 
 func Author(api fiber.Router) {
 

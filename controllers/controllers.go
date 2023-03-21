@@ -1,13 +1,10 @@
 package controller
 
 import (
-/* 	"log"
+	/* 	"log"
 
-	"github.com/Daizaikun/back-library/database"
-	"gorm.io/gorm" */
-
+	   	"gorm.io/gorm" */
 	"github.com/gofiber/fiber/v2"
-	
 )
 
 type Ctrl interface {
@@ -18,11 +15,8 @@ type Ctrl interface {
 	GetById(c *fiber.Ctx) error
 }
 
-
-
-
 /* type CRUD struct{
-	
+
 	DB *gorm.DB
 }
 
@@ -33,13 +27,12 @@ func NewCRUD(db *gorm.DB) *CRUD {
 
 type Model interface{
 
-	
 }
 
 func (a CRUD) GetById(id string, obj Model) ( error) {
 
 	result := a.DB.First(obj, id)
-	
+
 	return result.Error
 }
 
@@ -65,4 +58,3 @@ func (a CRUD) Delete(obj Model) error {
 	result := a.DB.Delete(obj)
 	return result.Error
 } */
-
