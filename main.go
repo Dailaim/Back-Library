@@ -1,15 +1,12 @@
 package main
 
 import (
-	"os"
+	"github.com/joho/godotenv"
 
 	"github.com/Daizaikun/back-library/app"
-
 	"github.com/Daizaikun/back-library/database"
-
 	"github.com/Daizaikun/back-library/helpers"
-	
-	"github.com/joho/godotenv"
+
 )
 
 
@@ -34,13 +31,7 @@ func main() {
 
 	app := app.App()
 
-	app.Listen(port("8080"))
+	app.Listen(":" + helpers.Env("port","8080"))
 }
 
-func port(p string) string {
-	port := os.Getenv("PORT")
-	if len(port) == 0 {
-		port = p
-	}
-	return ":" + port
-}
+

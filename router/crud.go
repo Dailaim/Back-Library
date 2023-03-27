@@ -12,6 +12,8 @@ import (
 
 func CRUD(app fiber.Router) {
 
+	app.Route("/user", User)
+
 	app.Route("/review", Review)
 
 	app.Route("/book", Book)
@@ -19,9 +21,7 @@ func CRUD(app fiber.Router) {
 	app.Route("/author", Author)
 
 	app.Route("/category", Category)
-
-	app.Route("/user", User)
-
+	
 }
 
 
@@ -36,6 +36,12 @@ func BasicCRUD(api fiber.Router, obj controller.Ctrl) {
 
 }
 
+// @Summary Get all books
+// @Tags Books
+// @Description Get all books
+// @Produce json
+// @Success 200 {array} Book
+// @Router /books [get]
 func Book(api fiber.Router) {
 
 	BasicCRUD(api, &book.Controller{})

@@ -35,7 +35,7 @@ func HandleLogout(c *fiber.Ctx) error {
 	}
 
 	// Agregar el token a la lista negra para invalidarlo
-	err = middleware.AddToken(tokenString)
+	err = middleware.BlackListAddToken(tokenString)
 	if err != nil {
 		return err
 	}

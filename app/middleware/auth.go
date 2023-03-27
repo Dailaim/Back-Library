@@ -6,7 +6,6 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
-
 )
 
 const SecretKey = "library"
@@ -41,7 +40,7 @@ func AuthMiddleware(c *fiber.Ctx) error {
 	}
 
 	// Obtener el ID de usuario del token de acceso
-	userID := claims["user_id"].(string)
+	userID := fmt.Sprintf("%v", claims["user_id"])
 
 	// Establecer el ID de usuario en el contexto de Fiber
 	c.Set("user_id", userID)
@@ -49,5 +48,3 @@ func AuthMiddleware(c *fiber.Ctx) error {
 	// Llamar a la función siguiente en la cadena de middleware
 	return c.Next()
 }
-
-

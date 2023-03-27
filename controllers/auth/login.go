@@ -2,12 +2,11 @@ package auth
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/Daizaikun/back-library/app/middleware"
 	"github.com/Daizaikun/back-library/database"
 	"github.com/Daizaikun/back-library/models"
+
 )
 
 func HandleAuthentication(c *fiber.Ctx) error {
@@ -15,9 +14,10 @@ func HandleAuthentication(c *fiber.Ctx) error {
 	if err := c.BodyParser(&user); err != nil {
 		return err
 	}
+	var existingUser models.User
 
 	// Buscar el usuario en la base de datos
-	result := database.DB.Where("email = ?", user.Email).First(&user)
+	result := database.DB.Where("email = ?", user.Email).First(&existingUser)
 	if result.RowsAffected == 0 {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"error": "incorrect email or password",
@@ -25,26 +25,22 @@ func HandleAuthentication(c *fiber.Ctx) error {
 	}
 
 	// Validar la contraseña del usuario
-	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(user.Password))
+	err := bcrypt.CompareHashAndPassword([]byte(existingUser.Password), []byte(user.Password))
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"error": "incorrect email or password",
 		})
 	}
 
-	// Generar el token de acceso
-	claims := jwt.MapClaims{}
-	claims["user_id"] = user.ID
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	signedToken, err := token.SignedString([]byte(middleware.SecretKey))
+	existingUser.Password = ""
+
+	// Establecer el token de acceso en la estructura User
+	existingUser.AccessToken, err = generateToken(existingUser.ID)
 
 	if err != nil {
 		return err
 	}
 
-	// Establecer el token de acceso en la estructura User
-	user.AccessToken = signedToken
-
 	// Devolver la estructura User al cliente
-	return c.JSON(user)
+	return c.JSON(existingUser)
 }

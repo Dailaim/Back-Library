@@ -1,11 +1,13 @@
 package router
 
 import (
+	"github.com/gofiber/fiber/v2"
+
 	"github.com/Daizaikun/back-library/app/middleware"
 	"github.com/Daizaikun/back-library/controllers/auth"
 	"github.com/Daizaikun/back-library/controllers/review"
 	"github.com/Daizaikun/back-library/controllers/user"
-	"github.com/gofiber/fiber/v2"
+
 )
 
 func Auth(app fiber.Router) {
@@ -17,13 +19,15 @@ func Auth(app fiber.Router) {
 }
 
 func User(api fiber.Router) {
+
+	userCurd := &user.Controller{}
 	// Proteger todas las rutas de usuario con el middleware de autenticación
 
 	api.Use(middleware.AuthMiddleware)
-	userCurd := &user.Controller{}
+	
 
 	// Definir las rutas de usuario
-	api.Get("/", userCurd.GetById)
+	api.Get("/:id", userCurd.GetById)
 	api.Put("/", userCurd.Update)
 	api.Delete("/", userCurd.Delete)
 

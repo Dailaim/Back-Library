@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"time"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"
@@ -45,19 +47,25 @@ func HandleRegistration(c *fiber.Ctx) error {
 		return result.Error
 	}
 
-	// Generar el token de acceso
-	claims := jwt.MapClaims{}
-	claims["user_id"] = user.ID
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	signedToken, err := token.SignedString([]byte(middleware.SecretKey))
+	// Establecer el token de acceso en la estructura User
+	user.AccessToken, err = generateToken(user.ID)
 
 	if err != nil {
 		return err
 	}
-
-	// Establecer el token de acceso en la estructura User
-	user.AccessToken = signedToken
+	user.Password = ""
 
 	// Devolver la estructura User al cliente
 	return c.JSON(user)
+}
+
+// Generar el token de acceso
+func generateToken(id uint) (string, error) {
+
+	claims := jwt.MapClaims{}
+	claims["user_id"] = id
+	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(middleware.SecretKey))
+
 }
