@@ -2,13 +2,13 @@
 
 ## Iniciar el proyecto
 
-1. ```clon git clone https://github.com/Daizaikun/Back-Library```
+1. Clonar el repositorio ```git clone https://github.com/Daizaikun/Back-Library```
 
 2. Configurar las variables de entorno en el archivo .env si (esto es opcional si se usa los archivos docker por defecto)
 
-3. ```Usar docker-compose upp``` si cambia los valores del .env por defecto debe actualizar el archivo docker-compose
+3. ```Usar docker-compose up``` si cambia los valores del .env por defecto debe actualizar el archivo docker-compose
 
-4. El proyecto por defecto se ejecuta en el puerto 8080
+4. El proyecto por defecto se ejecuta en el puerto ```8080```
 
 Para despegarlo en producción recomiendo usar [fly.io](http://fly.io)
 
