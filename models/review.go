@@ -1,6 +1,5 @@
 package models
 
-
 type Review struct {
 	BasicModel
 	Comment string `json:"comment"`
@@ -10,5 +9,3 @@ type Review struct {
 	UserID  uint   `gorm:"user_id"`
 	User    User   `gorm:"foreignKey:UserID" json:"user"`
 }
-
-

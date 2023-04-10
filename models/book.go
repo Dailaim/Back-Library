@@ -1,6 +1,4 @@
 package models
-
-
 type Book struct {
 	BasicModel
 	Title         string      `json:"title,omitempty" gorm:"not null"`
@@ -12,5 +10,3 @@ type Book struct {
 	Categories    []*Category `gorm:"many2many:book_categories" json:"categories,omitempty"`
 	Reviews       []Review    `gorm:"foreignKey:BookID" json:"reviews,omitempty"`
 }
-
-

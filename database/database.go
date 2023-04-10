@@ -42,7 +42,10 @@ func Connect() *gorm.DB {
 
 	/* DB.Logger = logger.Default.LogMode(logger.Info) */
 
-	Migrate(DB)
+	err =Migrate(DB)
+	if err != nil {
+		panic("failed to migrate database")
+	}
 
 	return DB
 

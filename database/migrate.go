@@ -6,13 +6,14 @@ import (
 )
 
 //Verifica y crea las tablas de la base de datos
-func Migrate(db *gorm.DB) {
+func Migrate(db *gorm.DB) error{
 
 	err := db.AutoMigrate(&models.Book{}, &models.Review{}, &models.User{},
 		&models.Author{}, &models.Category{}, &models.BookAuthor{}, &models.BookCategory{})
 
 	if err != nil {
-		panic("failed to connect database")
+		return err
 	}
-
+	
+	return nil
 }

@@ -1,7 +1,7 @@
 package models
 
 type User struct {
-	BasicModel
+	BasicModel// ID, CreatedAt, UpdatedAt, DeletedAt
 	Email       string    `json:"email,omitempty" gorm:"not null;unique_index" validate:"required"`
 	Name        string    `json:"name,omitempty" gorm:"not null" validate:"required,email,min=6"`
 	Password    string    `json:"password,omitempty" gorm:"not null" validate:"required"`
