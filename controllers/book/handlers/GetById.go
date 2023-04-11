@@ -14,7 +14,7 @@ import (
 // @Failure 400
 // @Failure 404 {object} models.Error
 // @Failure 500 {object} models.Error
-// @Router /crud/books/{id} [get]
+// @Router /crud/book/{id} [get]
 func GetById(ctx *fiber.Ctx) error{
 	id := ctx.Params("id")
 

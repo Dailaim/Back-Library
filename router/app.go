@@ -19,7 +19,7 @@ func Routers(app fiber.Router) {
 
 	images.Routers(app.Group("/images"))
 
-	crud := app.Group("/book")
+	crud := app.Group("/crud")
 	
 	book.Routers(crud.Group("/book"))
 	author.Routers(crud.Group("/author"))

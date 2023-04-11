@@ -39,6 +39,7 @@ func Connect() *gorm.DB {
 	if err != nil {
 		panic("failed to connect database")
 	}
+	
 
 	/* DB.Logger = logger.Default.LogMode(logger.Info) */
 

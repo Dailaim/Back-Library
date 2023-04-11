@@ -327,7 +327,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/crud/books": {
+        "/crud/book": {
             "get": {
                 "description": "Get all books",
                 "produces": [
@@ -392,7 +392,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/crud/books/{id}": {
+        "/crud/book/{id}": {
             "get": {
                 "description": "Get book by id",
                 "produces": [

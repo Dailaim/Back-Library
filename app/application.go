@@ -40,7 +40,7 @@ func App() *fiber.App {
 
 	// Crear routs de la aplicación
 
-	router.Routers(app.Group("/api"))
+	router.Routers(app)
 
 
 	return app

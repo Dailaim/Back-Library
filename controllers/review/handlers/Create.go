@@ -29,6 +29,15 @@ func Create(ctx *fiber.Ctx) error {
 		})
 	}
 
+	// Verificar que el review tenga un score y un comentario
+	if review.Score == 0 || review.Comment == "" {
+		return ctx.Status(fiber.StatusBadRequest).JSON(models.Error{
+			Message: "No se pudo crear el review",
+			Code:    fiber.StatusBadRequest,
+			Error:   err,
+		})
+	}
+
 	// Crear el review en la base de datos
 
 	if result := database.DB.Create(review); result.Error != nil {

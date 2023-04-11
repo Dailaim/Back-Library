@@ -315,7 +315,7 @@
                 }
             }
         },
-        "/crud/books": {
+        "/crud/book": {
             "get": {
                 "description": "Get all books",
                 "produces": [
@@ -380,7 +380,7 @@
                 }
             }
         },
-        "/crud/books/{id}": {
+        "/crud/book/{id}": {
             "get": {
                 "description": "Get book by id",
                 "produces": [

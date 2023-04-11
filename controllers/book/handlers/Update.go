@@ -15,7 +15,7 @@ import (
 // @Failure 400
 // @Failure 404
 // @Failure 500
-// @Router /crud/books/{id} [put]
+// @Router /crud/book/{id} [put]
 func Update(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 

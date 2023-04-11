@@ -12,7 +12,7 @@ import (
 // @Produce json
 // @Success 200 {array} []models.Book
 // @Failure 500 {object} models.Error
-// @Router /crud/books [get]
+// @Router /crud/book [get]
 func GetAll(ctx *fiber.Ctx) error {
 	book := new([]models.Book)
 

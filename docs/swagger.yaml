@@ -341,7 +341,7 @@ paths:
       summary: Update author
       tags:
       - Author
-  /crud/books:
+  /crud/book:
     get:
       description: Get all books
       produces:
@@ -384,7 +384,7 @@ paths:
       summary: Create books
       tags:
       - Book
-  /crud/books/{id}:
+  /crud/book/{id}:
     delete:
       description: Delete book
       parameters:

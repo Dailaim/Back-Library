@@ -14,7 +14,7 @@ import (
 // @Failure 400
 // @Failure 404
 // @Failure 500
-// @Router /crud/books/{id} [delete]
+// @Router /crud/book/{id} [delete]
 func Delete(ctx *fiber.Ctx) error {
 
 	id := ctx.Params("id")

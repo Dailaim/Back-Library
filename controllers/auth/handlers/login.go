@@ -29,16 +29,18 @@ func Authentication(c *fiber.Ctx) error {
 	// Buscar el usuario en la base de datos
 	result := database.DB.Where("email = ?", user.Email).First(&existingUser)
 	if result.RowsAffected == 0 {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"error": "incorrect email or password",
+		return c.Status(fiber.StatusUnauthorized).JSON(models.Error{
+			Message: "incorrect email or password",
+			Code:    fiber.StatusUnauthorized,
 		})
 	}
 
 	// Validar la contraseña del usuario
 	err := bcrypt.CompareHashAndPassword([]byte(existingUser.Password), []byte(user.Password))
 	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"error": "incorrect email or password",
+		return c.Status(fiber.StatusUnauthorized).JSON(models.Error{
+			Message: "incorrect email or password",
+			Code:    fiber.StatusUnauthorized,
 		})
 	}
 

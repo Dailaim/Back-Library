@@ -17,7 +17,7 @@ import (
 // @Failure 400
 // @Failure 404 {object} models.Error
 // @Failure 500 {object} models.Error
-// @Router /crud/books [post]
+// @Router /crud/book [post]
 func Create(ctx *fiber.Ctx) error {
 	// Crear un nuevo libro
 	book := new(models.Book)
