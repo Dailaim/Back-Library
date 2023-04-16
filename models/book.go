@@ -4,6 +4,7 @@ type Book struct {
 	Title         string      `json:"title,omitempty" gorm:"not null"`
 	Image         string      `json:"image,omitempty" gorm:"not null"`
 	Resume        string      `json:"resume,omitempty"`
+	Year		  int         `json:"year,omitempty"`
 	AuthorsIDs    []uint      `gorm:"-" json:"authors_id,omitempty"`
 	CategoriesIDs []uint      `gorm:"-" json:"categories_id,omitempty"`
 	Authors       []*Author   `gorm:"many2many:book_authors" json:"authors,omitempty"`

@@ -8,7 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 
 	"github.com/Daizaikun/back-library/app/middleware"
-	"github.com/Daizaikun/back-library/models"
+	AuthModels "github.com/Daizaikun/back-library/controllers/auth/models"
 )
 
 // HandleLogout godoc
@@ -17,9 +17,9 @@ import (
 // @Tags Auth
 // @Accept json
 // @Produce json
-// @Success 204 
-// @Failure 401 {object} models.Error
-// @Failure 500 {object} models.Error
+// @Success 204
+// @Failure 401 {object} AuthModels.Response
+// @Failure 500 {object} AuthModels.Response
 // @Router /auth/logout [post]
 func Logout(ctx *fiber.Ctx) error {
 	// Obtener el token de acceso del encabezado Authorization
@@ -36,18 +36,25 @@ func Logout(ctx *fiber.Ctx) error {
 	})
 
 	if err != nil || !token.Valid {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(models.Error{
-			Message: "Token inválido",
-			Code:    fiber.StatusUnauthorized,
-		})
+		return ctx.Status(fiber.StatusUnauthorized).JSON(AuthModels.Response{
+			Data: nil,
+			Error: &AuthModels.Error{
+				Message: "El token de acceso es inválido",
+				Code:    fiber.StatusUnauthorized,
+			},
+		},
+		)
 	}
 
 	// Agregar el token a la lista negra para invalidarlo
 	err = middleware.BlackListAddToken(tokenString)
 	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(models.Error{
-			Message: "Hubo un error al invalidar el token",
-			Code:    fiber.StatusInternalServerError,
+		return ctx.Status(fiber.StatusInternalServerError).JSON(AuthModels.Response{
+			Data: nil,
+			Error: &AuthModels.Error{
+				Message: "No se pudo invalidar el token de acceso",
+				Code:    fiber.StatusInternalServerError,
+			},
 		})
 	}
 

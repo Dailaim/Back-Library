@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/Daizaikun/back-library/controllers/author/handlers"
+	AuthorModels "github.com/Daizaikun/back-library/controllers/author/models"
 	"github.com/Daizaikun/back-library/database"
 	"github.com/Daizaikun/back-library/models"
 	"github.com/gofiber/fiber/v2"
@@ -21,7 +22,9 @@ func TestGetAuthorById(t *testing.T) {
 
 	// Crear un autor de prueba
 	author := models.Author{
-		Name:  "Pruebaaaaaa",
+		FirstName: "John",
+		LastName:  "Doe",
+		Age:       30,
 	}
 	database.DB.Create(&author)
 	defer database.DB.Where(author).Delete(&author)
@@ -41,9 +44,9 @@ func TestGetAuthorById(t *testing.T) {
 	assert.Equal(t, http.StatusOK, response.StatusCode)
 
 	// Leer el cuerpo de la respuesta HTTP
-	var responseAuthor models.Author
+	var responseAuthor AuthorModels.SingleAuthorResponse
 	json.NewDecoder(response.Body).Decode(&responseAuthor)
 
 	// Verificar que el autor tenga el mismo ID que el autor de prueba
-	assert.Equal(t, author.ID, responseAuthor.ID)
+	assert.Equal(t, author.ID, responseAuthor.Data.ID)
 }

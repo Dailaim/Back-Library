@@ -1,21 +1,21 @@
 package handlers
 
 import (
+	AuthorModels "github.com/Daizaikun/back-library/controllers/author/models"
 	"github.com/Daizaikun/back-library/database"
 	"github.com/Daizaikun/back-library/models"
 	"github.com/gofiber/fiber/v2"
 )
-
 
 // @Summary Get author by id
 // @Tags Author
 // @Description Get author by id
 // @Produce json
 // @Param id path string true "Author ID"
-// @Success 200 {object} models.Author
+// @Success 200 {object} AuthorModels.SingleAuthorResponse
 // @Failure 400
-// @Failure 404 {object} models.Error
-// @Failure 500 {object} models.Error
+// @Failure 404 {object} AuthorModels.Response
+// @Failure 500 {object} AuthorModels.Response
 // @Router /crud/author/{id} [get]
 func GetById(ctx *fiber.Ctx) error {
 
@@ -26,14 +26,19 @@ func GetById(ctx *fiber.Ctx) error {
 	err := GetAuthorById(author, id)
 
 	if err != nil {
-		return ctx.Status(fiber.StatusNotFound).JSON(models.Error{
-			Message: "No se encontró el autor",
-			Code:    fiber.StatusNotFound,
-			Error:   err,
+		return ctx.Status(fiber.StatusNotFound).JSON(AuthorModels.Response{
+			Error: &AuthorModels.Error{
+				Message: "No se encontró el autor",
+				Code:    fiber.StatusNotFound,
+			},
+			Data: nil,
 		})
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(author)
+	return ctx.Status(fiber.StatusOK).JSON(AuthorModels.Response{
+		Error: nil,
+		Data:  author,
+	})
 }
 
 func GetAuthorById(author *models.Author, id string) error {

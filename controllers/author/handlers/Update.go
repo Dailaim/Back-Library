@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	AuthorModels "github.com/Daizaikun/back-library/controllers/author/models"
 	"github.com/Daizaikun/back-library/database"
 	"github.com/Daizaikun/back-library/models"
 	"github.com/gofiber/fiber/v2"
@@ -11,10 +12,10 @@ import (
 // @Description Update author
 // @Produce json
 // @Param id path string true "Author ID"
-// @Success 200 {object} models.Author
-// @Failure 400 {object} models.Error
-// @Failure 404 {object} models.Error
-// @Failure 500 {object} models.Error
+// @Success 200 {object} AuthorModels.SingleAuthorResponse
+// @Failure 400 {object} AuthorModels.Response
+// @Failure 404 {object} AuthorModels.Response
+// @Failure 500 {object} AuthorModels.Response
 // @Router /crud/author/{id} [put]
 func Update(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
@@ -24,19 +25,31 @@ func Update(ctx *fiber.Ctx) error {
 	err := GetAuthorById(author, id)
 
 	if err != nil {
-		return ctx.Status(fiber.StatusNotFound).JSON(models.Error{
-			Message: "No se encontró el autor",
-			Code:    fiber.StatusNotFound,
-			Error:   err,
+		return ctx.Status(fiber.StatusNotFound).JSON(AuthorModels.Response{
+			Error: &AuthorModels.Error{
+				Message: "No se encontró el autor",
+				Code:    fiber.StatusNotFound,
+			},
+			Data: nil,
 		})
 	}
 
-	if err := ctx.BodyParser(author); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(models.Error{
-			Message: "Error al actualizar el autor",
-			Code:    fiber.StatusBadRequest,
-			Error:   err,
+	updateAuthor := new(AuthorModels.NewAuthor)
+
+	if err := ctx.BodyParser(updateAuthor); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(AuthorModels.Response{
+			Error: &AuthorModels.Error{
+				Message: "Error al parsear el body",
+				Code:    fiber.StatusBadRequest,
+			},
+			Data: nil,
 		})
+	}
+
+	author = &models.Author{
+		FirstName: updateAuthor.FirstName,
+		LastName: updateAuthor.LastName,
+		Age: updateAuthor.Age,
 	}
 	
 	if err := UpdateAuthor(author); err != nil {
@@ -46,7 +59,20 @@ func Update(ctx *fiber.Ctx) error {
 			Error:   err,
 		})
 	}
-	return ctx.Status(fiber.StatusOK).JSON(author)
+
+	AuthorResponse := AuthorModels.Author{
+		ID:        author.ID,
+		FirstName: author.FirstName,
+		LastName:  author.LastName,
+		Age:       author.Age,
+	}
+
+
+
+	return ctx.Status(fiber.StatusOK).JSON(AuthorModels.Response{
+		Error: nil,
+		Data:  AuthorResponse,
+	})
 }
 
 

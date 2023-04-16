@@ -1,7 +1,9 @@
 package models
 
 type Author struct {
-	ID    uint    `gorm:"primaryKey"`
-	Name  string  `json:"name,omitempty"`
-	Books []*Book `gorm:"many2many:book_authors;" json:"books,omitempty"`
+	ID        uint    `gorm:"primaryKey"`
+	FirstName string  
+	LastName  string  
+	Age       int     
+	Books     []*Book `gorm:"many2many:book_authors;"`
 }

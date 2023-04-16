@@ -1,24 +1,106 @@
 definitions:
-  gorm.DeletedAt:
+  AuthModels.Data:
     properties:
-      time:
+      token_access:
         type: string
-      valid:
-        description: Valid is true if Time is not NULL
-        type: boolean
     type: object
-  models.Author:
+  AuthModels.Error:
     properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  AuthModels.Response:
+    properties:
+      data:
+        $ref: '#/definitions/AuthModels.Data'
+      error:
+        $ref: '#/definitions/AuthModels.Error'
+    type: object
+  AuthModels.UserLogin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  AuthModels.UserRegister:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      photo:
+        type: string
+    type: object
+  AuthorModels.Author:
+    properties:
+      age:
+        type: integer
       books:
         items:
-          $ref: '#/definitions/models.Book'
+          $ref: '#/definitions/AuthorModels.Book'
         type: array
+      firstname:
+        type: string
       id:
         type: integer
+      lastname:
+        type: string
+    type: object
+  AuthorModels.Book:
+    properties:
+      image:
+        type: string
+      resume:
+        type: string
+      title:
+        type: string
+    type: object
+  AuthorModels.Error:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  AuthorModels.MultipleAuthorsResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/AuthorModels.Author'
+        type: array
+      error:
+        $ref: '#/definitions/AuthorModels.Error'
+    type: object
+  AuthorModels.NewAuthor:
+    properties:
+      age:
+        type: integer
+      firstname:
+        type: string
+      lastname:
+        type: string
       name:
         type: string
     type: object
-  models.Book:
+  AuthorModels.Response:
+    properties:
+      data: {}
+      error:
+        $ref: '#/definitions/AuthorModels.Error'
+    type: object
+  AuthorModels.SingleAuthorResponse:
+    properties:
+      data:
+        $ref: '#/definitions/AuthorModels.Author'
+      error:
+        $ref: '#/definitions/AuthorModels.Error'
+    type: object
+  github_com_Daizaikun_back-library_models.Book:
     properties:
       Updated_at:
         type: string
@@ -54,12 +136,37 @@ definitions:
         type: array
       title:
         type: string
+      year:
+        type: integer
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  models.Author:
+    properties:
+      age:
+        type: integer
+      books:
+        items:
+          $ref: '#/definitions/github_com_Daizaikun_back-library_models.Book'
+        type: array
+      firstName:
+        type: string
+      id:
+        type: integer
+      lastName:
+        type: string
     type: object
   models.Category:
     properties:
       books:
         items:
-          $ref: '#/definitions/models.Book'
+          $ref: '#/definitions/github_com_Daizaikun_back-library_models.Book'
         type: array
       id:
         type: integer
@@ -84,7 +191,7 @@ definitions:
       Updated_at:
         type: string
       book:
-        $ref: '#/definitions/models.Book'
+        $ref: '#/definitions/github_com_Daizaikun_back-library_models.Book'
       book_id:
         type: integer
       comment:
@@ -105,8 +212,6 @@ definitions:
   models.User:
     properties:
       Updated_at:
-        type: string
-      access_token:
         type: string
       create_at:
         type: string
@@ -147,22 +252,22 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/AuthModels.UserLogin'
       produces:
       - application/json
       responses:
         "200":
           description: User
           schema:
-            $ref: '#/definitions/models.User'
+            $ref: '#/definitions/AuthModels.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/models.Error'
+            $ref: '#/definitions/AuthModels.Response'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/models.Error'
+            $ref: '#/definitions/AuthModels.Response'
       summary: Login
       tags:
       - Auth
@@ -179,11 +284,11 @@ paths:
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/models.Error'
+            $ref: '#/definitions/AuthModels.Response'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/models.Error'
+            $ref: '#/definitions/AuthModels.Response'
       summary: Logout
       tags:
       - Auth
@@ -196,22 +301,22 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/AuthModels.UserRegister'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.User'
+            $ref: '#/definitions/AuthModels.Response'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.Error'
+            $ref: '#/definitions/AuthModels.Response'
         "409":
           description: Conflict
           schema:
-            $ref: '#/definitions/models.Error'
+            $ref: '#/definitions/AuthModels.Response'
       summary: Register
       tags:
       - Auth
@@ -225,34 +330,39 @@ paths:
           description: OK
           schema:
             items:
-              items:
-                $ref: '#/definitions/models.Author'
-              type: array
+              $ref: '#/definitions/AuthorModels.MultipleAuthorsResponse'
             type: array
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/models.Error'
+            $ref: '#/definitions/AuthorModels.Response'
       summary: Get all authors
       tags:
       - Author
     post:
       description: Create author
+      parameters:
+      - description: Author data
+        in: body
+        name: Author
+        required: true
+        schema:
+          $ref: '#/definitions/AuthorModels.NewAuthor'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Author'
+            $ref: '#/definitions/AuthorModels.SingleAuthorResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.Error'
+            $ref: '#/definitions/AuthorModels.Response'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/models.Error'
+            $ref: '#/definitions/AuthorModels.Response'
       summary: Create author
       tags:
       - Author
@@ -270,16 +380,18 @@ paths:
       responses:
         "204":
           description: No Content
+          schema:
+            $ref: '#/definitions/AuthorModels.Response'
         "400":
           description: Bad Request
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/models.Error'
+            $ref: '#/definitions/AuthorModels.Response'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/models.Error'
+            $ref: '#/definitions/AuthorModels.Response'
       summary: Delete author
       tags:
       - Author
@@ -297,17 +409,17 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Author'
+            $ref: '#/definitions/AuthorModels.SingleAuthorResponse'
         "400":
           description: Bad Request
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/models.Error'
+            $ref: '#/definitions/AuthorModels.Response'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/models.Error'
+            $ref: '#/definitions/AuthorModels.Response'
       summary: Get author by id
       tags:
       - Author
@@ -325,19 +437,19 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Author'
+            $ref: '#/definitions/AuthorModels.SingleAuthorResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.Error'
+            $ref: '#/definitions/AuthorModels.Response'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/models.Error'
+            $ref: '#/definitions/AuthorModels.Response'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/models.Error'
+            $ref: '#/definitions/AuthorModels.Response'
       summary: Update author
       tags:
       - Author
@@ -352,7 +464,7 @@ paths:
           schema:
             items:
               items:
-                $ref: '#/definitions/models.Book'
+                $ref: '#/definitions/github_com_Daizaikun_back-library_models.Book'
               type: array
             type: array
         "500":
@@ -370,7 +482,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Book'
+            $ref: '#/definitions/github_com_Daizaikun_back-library_models.Book'
         "400":
           description: Bad Request
         "404":
@@ -421,7 +533,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Book'
+            $ref: '#/definitions/github_com_Daizaikun_back-library_models.Book'
         "400":
           description: Bad Request
         "404":
@@ -449,7 +561,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Book'
+            $ref: '#/definitions/github_com_Daizaikun_back-library_models.Book'
         "400":
           description: Bad Request
         "404":

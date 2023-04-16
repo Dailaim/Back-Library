@@ -8,10 +8,10 @@ import (
 
 
 func Routers(app fiber.Router) {
+	
+	app.Static("/photos/", handlers.UsersPhotos())
 
-	app.Static("/photos/", handlers.BooksImages())
-
-	app.Static("/books/", handlers.UsersPhotos())
+	app.Static("/books/", handlers.BooksImages())
 
 	app.Post("/upload/book", handlers.UploadImageBooks)
 

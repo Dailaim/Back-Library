@@ -8,10 +8,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/assert"	
+	"github.com/stretchr/testify/assert"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/Daizaikun/back-library/controllers/auth/handlers"
+	AuthModels "github.com/Daizaikun/back-library/controllers/auth/models"
 	"github.com/Daizaikun/back-library/database"
 	"github.com/Daizaikun/back-library/models"
 	"github.com/gofiber/fiber/v2"
@@ -60,10 +61,10 @@ func TestAuthentication(t *testing.T) {
 	assert.Equal(t, http.StatusOK, response.StatusCode)
 
 	// Leer el cuerpo de la respuesta HTTP
-	var responseUser models.User
-	json.NewDecoder(response.Body).Decode(&responseUser)
+	var responseAccess AuthModels.Response
+	json.NewDecoder(response.Body).Decode(&responseAccess)
 
 	// Verificar que el usuario tenga un token de acceso
-	assert.NotEmpty(t, responseUser.AccessToken)
+	assert.NotEmpty(t, responseAccess.Data.TokenAccess)
 }
 

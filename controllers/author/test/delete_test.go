@@ -21,7 +21,9 @@ func TestDeleteAuthor(t *testing.T) {
 
 	// Crear un autor de prueba
 	author := models.Author{
-		Name: "Prueba",
+		FirstName: "John",
+		LastName:  "Doe",
+		Age:       30,
 	}
 	database.DB.Create(&author)
 

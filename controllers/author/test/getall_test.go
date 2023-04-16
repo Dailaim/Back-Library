@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/Daizaikun/back-library/controllers/author/handlers"
+	AuthorModels "github.com/Daizaikun/back-library/controllers/author/models"
 	"github.com/Daizaikun/back-library/database"
 	"github.com/Daizaikun/back-library/models"
 	"github.com/gofiber/fiber/v2"
@@ -21,9 +22,9 @@ func TestGetAllAuthors(t *testing.T) {
 
 	// Crear algunos autores de prueba
 	authors := []models.Author{
-		{Name: "Autor 1"},
-		{Name: "Autor 4"},
-		{Name: "Autor 3"},
+		{FirstName: "Autor 1", LastName: "Apellido 1", Age: 30},
+		{FirstName: "Autor 2", LastName: "Apellido 2", Age: 30},
+		{FirstName: "Autor 3", LastName: "Apellido 3", Age: 30},
 	}
 
 	// Limpiar la base de datos
@@ -54,19 +55,18 @@ func TestGetAllAuthors(t *testing.T) {
 	}
 
 	// Leer el cuerpo de la respuesta HTTP original
-	var responseAutorOrigin []models.Author
+	var responseAutorOrigin AuthorModels.MultipleAuthorsResponse
 	json.NewDecoder(responseOrigin.Body).Decode(&responseAutorOrigin)
 
 	// Verificar que la respuesta HTTP sea correcta
 	assert.Equal(t, http.StatusOK, response.StatusCode)
 
 	// Leer el cuerpo de la respuesta HTTP
-	var responseAuthors []models.Author
+	var responseAuthors AuthorModels.MultipleAuthorsResponse
 	json.NewDecoder(response.Body).Decode(&responseAuthors)
 
 	// Verificar que se devuelvan todos los autores
-	assert.Equal(t, len(authors) , len(responseAuthors) - len(responseAutorOrigin))
-
+	assert.Equal(t, len(authors) , len(responseAuthors.Data) - len(responseAutorOrigin.Data))
 }
 
 func delete(authors []models.Author) {

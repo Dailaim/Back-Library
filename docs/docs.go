@@ -36,7 +36,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/AuthModels.UserLogin"
                         }
                     }
                 ],
@@ -44,19 +44,19 @@ const docTemplate = `{
                     "200": {
                         "description": "User",
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/AuthModels.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/models.Error"
+                            "$ref": "#/definitions/AuthModels.Response"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.Error"
+                            "$ref": "#/definitions/AuthModels.Response"
                         }
                     }
                 }
@@ -82,13 +82,13 @@ const docTemplate = `{
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/models.Error"
+                            "$ref": "#/definitions/AuthModels.Response"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.Error"
+                            "$ref": "#/definitions/AuthModels.Response"
                         }
                     }
                 }
@@ -111,7 +111,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/AuthModels.UserRegister"
                         }
                     }
                 ],
@@ -119,19 +119,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/AuthModels.Response"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.Error"
+                            "$ref": "#/definitions/AuthModels.Response"
                         }
                     },
                     "409": {
                         "description": "Conflict",
                         "schema": {
-                            "$ref": "#/definitions/models.Error"
+                            "$ref": "#/definitions/AuthModels.Response"
                         }
                     }
                 }
@@ -153,17 +153,14 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/models.Author"
-                                }
+                                "$ref": "#/definitions/AuthorModels.MultipleAuthorsResponse"
                             }
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.Error"
+                            "$ref": "#/definitions/AuthorModels.Response"
                         }
                     }
                 }
@@ -177,23 +174,34 @@ const docTemplate = `{
                     "Author"
                 ],
                 "summary": "Create author",
+                "parameters": [
+                    {
+                        "description": "Author data",
+                        "name": "Author",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/AuthorModels.NewAuthor"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Author"
+                            "$ref": "#/definitions/AuthorModels.SingleAuthorResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.Error"
+                            "$ref": "#/definitions/AuthorModels.Response"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.Error"
+                            "$ref": "#/definitions/AuthorModels.Response"
                         }
                     }
                 }
@@ -222,7 +230,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Author"
+                            "$ref": "#/definitions/AuthorModels.SingleAuthorResponse"
                         }
                     },
                     "400": {
@@ -231,13 +239,13 @@ const docTemplate = `{
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.Error"
+                            "$ref": "#/definitions/AuthorModels.Response"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.Error"
+                            "$ref": "#/definitions/AuthorModels.Response"
                         }
                     }
                 }
@@ -264,25 +272,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Author"
+                            "$ref": "#/definitions/AuthorModels.SingleAuthorResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.Error"
+                            "$ref": "#/definitions/AuthorModels.Response"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.Error"
+                            "$ref": "#/definitions/AuthorModels.Response"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.Error"
+                            "$ref": "#/definitions/AuthorModels.Response"
                         }
                     }
                 }
@@ -307,7 +315,10 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content"
+                        "description": "No Content",
+                        "schema": {
+                            "$ref": "#/definitions/AuthorModels.Response"
+                        }
                     },
                     "400": {
                         "description": "Bad Request"
@@ -315,13 +326,13 @@ const docTemplate = `{
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.Error"
+                            "$ref": "#/definitions/AuthorModels.Response"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.Error"
+                            "$ref": "#/definitions/AuthorModels.Response"
                         }
                     }
                 }
@@ -345,7 +356,7 @@ const docTemplate = `{
                             "items": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/definitions/models.Book"
+                                    "$ref": "#/definitions/github_com_Daizaikun_back-library_models.Book"
                                 }
                             }
                         }
@@ -371,7 +382,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Book"
+                            "$ref": "#/definitions/github_com_Daizaikun_back-library_models.Book"
                         }
                     },
                     "400": {
@@ -415,7 +426,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Book"
+                            "$ref": "#/definitions/github_com_Daizaikun_back-library_models.Book"
                         }
                     },
                     "400": {
@@ -457,7 +468,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Book"
+                            "$ref": "#/definitions/github_com_Daizaikun_back-library_models.Book"
                         }
                     },
                     "400": {
@@ -1137,36 +1148,164 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "gorm.DeletedAt": {
+        "AuthModels.Data": {
             "type": "object",
             "properties": {
-                "time": {
+                "token_access": {
                     "type": "string"
-                },
-                "valid": {
-                    "description": "Valid is true if Time is not NULL",
-                    "type": "boolean"
                 }
             }
         },
-        "models.Author": {
+        "AuthModels.Error": {
             "type": "object",
             "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "AuthModels.Response": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/AuthModels.Data"
+                },
+                "error": {
+                    "$ref": "#/definitions/AuthModels.Error"
+                }
+            }
+        },
+        "AuthModels.UserLogin": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "AuthModels.UserRegister": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "photo": {
+                    "type": "string"
+                }
+            }
+        },
+        "AuthorModels.Author": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "integer"
+                },
                 "books": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.Book"
+                        "$ref": "#/definitions/AuthorModels.Book"
                     }
+                },
+                "firstname": {
+                    "type": "string"
                 },
                 "id": {
                     "type": "integer"
+                },
+                "lastname": {
+                    "type": "string"
+                }
+            }
+        },
+        "AuthorModels.Book": {
+            "type": "object",
+            "properties": {
+                "image": {
+                    "type": "string"
+                },
+                "resume": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "AuthorModels.Error": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "AuthorModels.MultipleAuthorsResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/AuthorModels.Author"
+                    }
+                },
+                "error": {
+                    "$ref": "#/definitions/AuthorModels.Error"
+                }
+            }
+        },
+        "AuthorModels.NewAuthor": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "firstname": {
+                    "type": "string"
+                },
+                "lastname": {
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
                 }
             }
         },
-        "models.Book": {
+        "AuthorModels.Response": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "error": {
+                    "$ref": "#/definitions/AuthorModels.Error"
+                }
+            }
+        },
+        "AuthorModels.SingleAuthorResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/AuthorModels.Author"
+                },
+                "error": {
+                    "$ref": "#/definitions/AuthorModels.Error"
+                }
+            }
+        },
+        "github_com_Daizaikun_back-library_models.Book": {
             "type": "object",
             "properties": {
                 "Updated_at": {
@@ -1219,6 +1358,44 @@ const docTemplate = `{
                 },
                 "title": {
                     "type": "string"
+                },
+                "year": {
+                    "type": "integer"
+                }
+            }
+        },
+        "gorm.DeletedAt": {
+            "type": "object",
+            "properties": {
+                "time": {
+                    "type": "string"
+                },
+                "valid": {
+                    "description": "Valid is true if Time is not NULL",
+                    "type": "boolean"
+                }
+            }
+        },
+        "models.Author": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "books": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_Daizaikun_back-library_models.Book"
+                    }
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "lastName": {
+                    "type": "string"
                 }
             }
         },
@@ -1228,7 +1405,7 @@ const docTemplate = `{
                 "books": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.Book"
+                        "$ref": "#/definitions/github_com_Daizaikun_back-library_models.Book"
                     }
                 },
                 "id": {
@@ -1266,7 +1443,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "book": {
-                    "$ref": "#/definitions/models.Book"
+                    "$ref": "#/definitions/github_com_Daizaikun_back-library_models.Book"
                 },
                 "book_id": {
                     "type": "integer"
@@ -1304,9 +1481,6 @@ const docTemplate = `{
             ],
             "properties": {
                 "Updated_at": {
-                    "type": "string"
-                },
-                "access_token": {
                     "type": "string"
                 },
                 "create_at": {

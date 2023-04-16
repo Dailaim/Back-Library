@@ -34,7 +34,7 @@ func GetAllByBook(ctx *fiber.Ctx) error {
 
 	return ctx.Status(200).JSON(reviews)
 
-}
+}	
 
 func GetAllReviewByBook(reviews *[]models.Review, id string) error {
 

@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/Daizaikun/back-library/controllers/author/handlers"
+	AuthorModels "github.com/Daizaikun/back-library/controllers/author/models"
 	"github.com/Daizaikun/back-library/database"
 	"github.com/Daizaikun/back-library/models"
 	"github.com/gofiber/fiber/v2"
@@ -22,13 +23,17 @@ func TestUpdateAuthor(t *testing.T) {
 
 	// Crear un autor de prueba
 	author := models.Author{
-		Name:  "Pruebaaaaaa",
+		FirstName: "John",
+		LastName:  "Doe",
+		Age:       30,
 	}
 	database.DB.Create(&author)
 	defer database.DB.Where(author).Delete(&author)
 
 	// Actualizar el autor de prueba
-	author.Name = "Prueba actualizada"
+	author.FirstName = "Jane"
+	author.LastName = "Dui"
+	author.Age = 25
 
 	// Crear una solicitud HTTP con el autor de prueba actualizado
 	requestBody, err := json.Marshal(author)
@@ -51,9 +56,11 @@ func TestUpdateAuthor(t *testing.T) {
 	assert.Equal(t, http.StatusOK, response.StatusCode)
 
 	// Leer el cuerpo de la respuesta HTTP
-	var responseAuthor models.Author
+	var responseAuthor AuthorModels.SingleAuthorResponse
 	json.NewDecoder(response.Body).Decode(&responseAuthor)
 
 	// Verificar que el nombre del autor actualizado sea correcto
-	assert.Equal(t, author.Name, responseAuthor.Name)
+	assert.Equal(t, author.FirstName, responseAuthor.Data.FirstName)
+	assert.Equal(t, author.LastName, responseAuthor.Data.LastName)
+	assert.Equal(t, author.Age, responseAuthor.Data.Age)
 }
