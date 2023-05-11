@@ -1,15 +1,12 @@
 package handlers
 
 import (
-	"time"
-
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/Daizaikun/back-library/app/middleware"
 	AuthModels "github.com/Daizaikun/back-library/controllers/auth/models"
 	"github.com/Daizaikun/back-library/database"
+	"github.com/Daizaikun/back-library/helpers"
 	"github.com/Daizaikun/back-library/models"
 )
 
@@ -18,7 +15,7 @@ import (
 // @Description Register
 // @Produce json
 // @Param user body AuthModels.UserRegister true "User"
-// @Success 200 {object} AuthModels.Response 
+// @Success 200 {object} AuthModels.Response
 // @Failure 400	{object} AuthModels.Response
 // @Failure 409 {object} AuthModels.Response
 // @Router /auth/register [post]
@@ -78,7 +75,7 @@ func Registration(ctx *fiber.Ctx) error {
 	}
 
 	// Establecer el token de acceso en la estructura User
-	tokenAccess, err := generateToken(NewUser.ID)
+	tokenAccess, err := helpers.GenerateToken(NewUser.ID)
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(AuthModels.Response{
 			Error: &AuthModels.Error{
@@ -97,15 +94,4 @@ func Registration(ctx *fiber.Ctx) error {
 		},
 	},
 	)
-}
-
-// Generar el token de acceso
-func generateToken(id uint) (string, error) {
-
-	claims := jwt.MapClaims{}
-	claims["user_id"] = id
-	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(middleware.SecretKey))
-
 }

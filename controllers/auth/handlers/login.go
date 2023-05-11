@@ -6,6 +6,7 @@ import (
 
 	AuthModels "github.com/Daizaikun/back-library/controllers/auth/models"
 	"github.com/Daizaikun/back-library/database"
+	"github.com/Daizaikun/back-library/helpers"
 	"github.com/Daizaikun/back-library/models"
 )
 
@@ -54,7 +55,7 @@ func Authentication(c *fiber.Ctx) error {
 	}
 
 	// Establecer el token de acceso en la estructura User
-	tokenAccess, err := generateToken(existingUser.ID)
+	tokenAccess, err := helpers.GenerateToken(existingUser.ID)
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(AuthModels.Response{
