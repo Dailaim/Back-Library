@@ -12,7 +12,7 @@ import (
 	AuthModels "github.com/Daizaikun/back-library/controllers/auth/models"
 	"github.com/Daizaikun/back-library/database"
 	"github.com/Daizaikun/back-library/models"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/gofiber/fiber/v2"
 	"github.com/stretchr/testify/assert"
 )

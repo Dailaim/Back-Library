@@ -13,7 +13,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    environment: 
+    environment:
       host_db: db
     ports:
       - "8080:8080"
